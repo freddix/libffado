@@ -10,7 +10,7 @@
 Summary:	Free FireWire Audio Drivers
 Name:		libffado
 Version:	2.1.0
-Release:	6.2
+Release:	7
 License:	LGPL
 Group:		Libraries
 Source0:	http://www.ffado.org/files/%{name}-%{version}.tgz
@@ -58,12 +58,10 @@ This is the package containing the header files for ffado library.
 %setup -q
 
 %build
-LDFLAGS="%{rpmldflags} -fPIC"
-export LDFLAGS
+export LDFLAGS="%{rpmldflags} -fPIC"
 
-sed -i -e 's|-O2|%{rpmcflags}|g' SConstruct
-
-sed -i -e 's|-$REVISION||' version.h.in
+%{__sed} -i -e 's|-O2|%{rpmcflags}|g' SConstruct
+%{__sed} -i -e 's|-$REVISION||' version.h.in
 
 %{__scons} \
 	BUILD_TESTS=0			\
@@ -71,6 +69,7 @@ sed -i -e 's|-$REVISION||' version.h.in
 	DESTDIR=$RPM_BUILD_ROOT		\
 	DIST_TARGET="%{_target_cpu}"	\
 	LIBDIR=%{_libdir}		\
+	MANDIR=%{_mandir}		\
 	PREFIX=%{_prefix}		\
 	UDEVDIR=/usr/lib/udev/rules.d	\
 	WILL_DEAL_WITH_XDG_MYSELF="True"
@@ -82,8 +81,12 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
 %{__scons} install		\
 	DEBUG=0			\
 	DESTDIR=$RPM_BUILD_ROOT	\
+	MANDIR=%{_mandir}	\
 	PREFIX=%{_prefix}	\
 	WILL_DEAL_WITH_XDG_MYSELF="True"
+
+%{__sed} -i 's/\ #.*$//g' \
+	$RPM_BUILD_ROOT%{_prefix}/lib/udev/rules.d/60-ffado.rules
 
 %py_ocomp $RPM_BUILD_ROOT%{py_sitescriptdir}
 %py_comp $RPM_BUILD_ROOT%{py_sitescriptdir}
@@ -127,7 +130,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_datadir}/libffado/configuration
 %{_datadir}/dbus-1/services/org.ffado.Control.service
-/usr/lib/udev/rules.d/60-ffado.rules
+%{_prefix}/lib/udev/rules.d/60-ffado.rules
 
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/icons
@@ -137,6 +140,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_desktopdir}/ffado-mixer.desktop
 %{_pixmapsdir}/ffado.png
+%{_mandir}/man1/ffado-*.1*
 
 %files devel
 %defattr(644,root,root,755)
