@@ -9,12 +9,12 @@
 
 Summary:	Free FireWire Audio Drivers
 Name:		libffado
-Version:	2.1.0
-Release:	7
+Version:	2.2.1
+Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://www.ffado.org/files/%{name}-%{version}.tgz
-# Source0-md5:	26bce2be0b9c1fa4e614f2f494edf388
+# Source0-md5:	e113d828835051f835fb4a329cb0cbd4
 URL:		http://www.ffado.org/
 BuildRequires:	dbus-c++-devel
 BuildRequires:	expat-devel
